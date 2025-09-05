@@ -1,18 +1,25 @@
 from datetime import datetime
-
+from os import getenv
+from dotenv import load_dotenv
 import psycopg2
 from psycopg2 import sql, Error
 
+load_dotenv()
 
 def connect_db():
-    conn = psycopg2.connect(
-        dbname="postgres",
-        user="postgres",
-        password="edvard19",
-        host="localhost",
-        port="5432"
-    )
-    return conn
+    try:
+        conn = psycopg2.connect(
+            dbname=getenv("DB_NAME"),
+            user=getenv("DB_USER"),
+            password=getenv("DB_PASSWORD"),
+            host=getenv("DB_HOST"),
+            port=getenv("DB_PORT")
+        )
+        print("✅ Успешное подключение к базе данных!")
+        return conn
+    except Error as e:
+        print(f"❌ Ошибка подключения к базе данных: {e}")
+        return None
 
 def register_client(name, surname, birthday,phone_number, email, password, role):
     conn = connect_db()
